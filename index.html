@@ -38,11 +38,9 @@
 							<h2>Localisation et horaires</h2>
 						</header>
 						<div class="content">
-							<p><strong>Rue Georges Bonnac</strong> sit amet consectetur adipiscing elit. Duis dapibus rutrum facilisis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Etiam tristique libero eu nibh porttitor amet fermentum. Nullam venenatis erat id vehicula ultrices sed ultricies condimentum. Magna sed etiam consequat, et lorem adipiscing sed nulla. Volutpat nisl et tempus et dolor libero, feugiat magna tempus, sed et lorem adipiscing.</p>
+							<p id="description"></p>
 							<p>Nos horaires :</p>
-							<ul>
-						    <li>Lundi : x H - y H</li>
-						    <li>...</li>
+							<ul id="horaires">
 							</ul>
 
 							<span class="image main"><img src="google_maps.png" alt="" /></span>
@@ -488,7 +486,24 @@ print 'Sorted in ' + i + ' iterations.';</code></pre>
 				loadJSON(function(response) {
 				var actual_JSON = JSON.parse(response);
 					realJSON = actual_JSON.values;
-					carousel(realJSON);
+					realJSON.shift();
+					var images = [];
+					var horaires = [];
+					var description = [];
+					for (t = 0; t < realJSON.length; t++) {
+						if (realJSON[t][0] !== '' && realJSON[t][0] !== undefined) {
+							images.push(realJSON[t][0]);
+						}
+						if (realJSON[t][1] !== '' && realJSON[t][1] !== undefined) {
+							horaires.push(realJSON[t][1]);
+						}
+						if (realJSON[t][2] !== '' && realJSON[t][2] !== undefined) {
+							description.push(realJSON[t][2]);
+						}
+					}
+					carousel(images);
+					schedule(horaires);
+					longText(description);
 				});
 
 				function carousel(receivedJSON) {
@@ -504,6 +519,20 @@ print 'Sorted in ' + i + ' iterations.';</code></pre>
 								i = 0
 							}
 						}, 5000);
+				}
+
+				function schedule(receivedJSON) {
+					var ul = document.getElementById("horaires");
+					for (var liElmnt = 0; liElmnt < receivedJSON.length; liElmnt++) {
+						var li = document.createElement("li");
+						li.appendChild(document.createTextNode(receivedJSON[liElmnt]));
+						ul.appendChild(li);
+					}
+				}
+
+				function longText(receivedJSON) {
+					var desc = document.getElementById("description");
+					desc.innerHTML = receivedJSON[0];
 				}
 			</script>
 
